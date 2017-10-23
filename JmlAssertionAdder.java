@@ -11275,16 +11275,19 @@ public class JmlAssertionAdder extends JmlTreeScanner {
             methodSpec = that.methodSpecsCombined;
             cases = that.cases;
             
-            ArrayList<JCExpression> def = new ArrayList <JCExpression> () ;
+            ArrayList<String> def = new ArrayList <String> () ;
+            ArrayList<String> deftype = new ArrayList <String> ();
+            ArrayList<String> use = new ArrayList <String> ();
+            ArrayList<String> usetype = new ArrayList <String> ();
             if (cases != null) {
                 System.out.println(cases);
-                if(cases.toString().contains("requires")) {
+                if(cases.toString().contains("assignable")) {
                     
                     String s = cases.cases.toString();
                     
                     System.out.println(s);
                     
-                    s = s.substring(s.lastIndexOf("requires")+"requires".length()+1, s.lastIndexOf(";"));
+                    s = s.substring(s.lastIndexOf("assignable")+"assignable".length()+1, s.lastIndexOf(";"));
                     
                     System.out.println(s);
                     
@@ -11295,9 +11298,31 @@ public class JmlAssertionAdder extends JmlTreeScanner {
                         String[] clauses = s.toString().split(",");
                         for(String clausedef : clauses) {
                             System.out.println(clausedef);
+                            int count = 0;
+                            for (JCVariableDecl param : parameters) {
+                                if(param.toString().equals(clausedef)) {
+                                    String typos = param.vartype.toString();
+                                    deftype.add(count, typos);
+                                    def.add(count, clausedef);
+                                    count++;
+                                }
+                            }
+                            
                         }
                     }
-            }
+            } 
+                else {
+                    
+                    if(parameters.length() > 0) {
+                        int count = 0;
+                        for (JCVariableDecl param : parameters) {
+                            usetype.add(count, param.vartype.toString());
+                            use.add(count, param.toString());
+                        }
+                        
+                    }
+                    
+                }
             
                 if(parameters.length() > 0) {
                     
