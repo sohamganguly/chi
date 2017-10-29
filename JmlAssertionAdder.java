@@ -11293,7 +11293,23 @@ public class JmlAssertionAdder extends JmlTreeScanner {
                     
                     if (s.contains("nothing")) {
                         //there is nothing to assign so all parameter list will be "USE"
+                         int count = 0;
+                         for (JCVariableDecl param : parameters) {
+                             usetype.add(count, param.vartype.toString());
+                             use.add (count, param.toString());
+                             count++;
+                         }
                 }
+                    else if (s.contains("everything")) {
+                        //add everything to definition list
+                        
+                        int count = 0;
+                        for (JCVariableDecl param : parameters) {
+                            deftype.add(count, param.vartype.toString());
+                            def.add(count, param.toString());
+                            count++;
+                        }
+                    }
                     else {
                         String[] clauses = s.toString().split(",");
                         for(String clausedef : clauses) {
@@ -11301,11 +11317,14 @@ public class JmlAssertionAdder extends JmlTreeScanner {
                             int count = 0;
                             for (JCVariableDecl param : parameters) {
                                 if(param.toString().equals(clausedef)) {
-                                    String typos = param.vartype.toString();
-                                    deftype.add(count, typos);
+                                    deftype.add(count, param.vartype.toString());
                                     def.add(count, clausedef);
-                                    count++;
                                 }
+                                else {
+                                    usetype.add(count, param.vartype.toString());
+                                    use.add(count, param.toString());
+                                }
+                                count++;
                             }
                             
                         }
